@@ -1,5 +1,5 @@
 import { type FC, useMemo } from 'react';
-import { useInitData, useLaunchParams, type User } from '@telegram-apps/sdk-react';
+import { useInitData, useLaunchParams,  type User} from '@telegram-apps/sdk-react';
 import { List, Placeholder } from '@telegram-apps/telegram-ui';
 
 import { DisplayData, type DisplayDataRow } from '@/components/DisplayData/DisplayData.tsx';
@@ -16,12 +16,19 @@ function getUserRows(user: User): DisplayDataRow[] {
     { title: 'language_code', value: user.languageCode },
     { title: 'allows_to_write_to_pm', value: user.allowsWriteToPm },
     { title: 'added_to_attachment_menu', value: user.addedToAttachmentMenu },
+   
   ];
 }
 
 export const InitDataPage: FC = () => {
   const initDataRaw = useLaunchParams().initDataRaw;
   const initData = useInitData();
+  const urlParams = new URLSearchParams(window.location.search);
+  console.log("initi data", initData)
+  console.log("initi data  raw", urlParams)
+
+
+ 
 
   const initDataRows = useMemo<DisplayDataRow[] | undefined>(() => {
     if (!initData || !initDataRaw) {
@@ -37,6 +44,10 @@ export const InitDataPage: FC = () => {
       canSendAfter,
       canSendAfterDate,
     } = initData;
+
+    
+  
+   
     return [
       { title: 'raw', value: initDataRaw },
       { title: 'auth_date', value: authDate.toLocaleString() },
@@ -51,6 +62,7 @@ export const InitDataPage: FC = () => {
     ];
   }, [initData, initDataRaw]);
 
+   
   const userRows = useMemo<DisplayDataRow[] | undefined>(() => {
     return initData && initData.user ? getUserRows(initData.user) : undefined;
   }, [initData]);

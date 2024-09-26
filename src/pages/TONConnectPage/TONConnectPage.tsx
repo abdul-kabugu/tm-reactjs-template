@@ -1,7 +1,11 @@
-import { useUtils } from '@telegram-apps/sdk-react';
+import { useMainButton, useQRScanner, useUtils } from '@telegram-apps/sdk-react';
 import { TonConnectButton, useTonWallet } from '@tonconnect/ui-react';
+import { initMainButton } from '@telegram-apps/sdk';
+import { Drawer } from 'vaul';
+
 import {
   Avatar,
+  Button,
   Cell,
   List,
   Navigation,
@@ -10,90 +14,46 @@ import {
   Text,
   Title,
 } from '@telegram-apps/telegram-ui';
+import {useState}  from 'react'
 import type { FC } from 'react';
-
+// onClick={() =>  window.open('https://example.com', '_blank')}
 import { DisplayData } from '@/components/DisplayData/DisplayData.tsx';
 
 import './TONConnectPage.css';
+import { MyDrawer } from '@/components/drawer';
 
 export const TONConnectPage: FC = () => {
-  const wallet = useTonWallet();
-  const utils = useUtils();
 
-  if (!wallet) {
-    return (
-      <Placeholder
-        className='ton-connect-page__placeholder'
-        header='TON Connect'
-        description={
-          <>
-            <Text>
-              To display the data related to the TON Connect, it is required to connect your wallet
-            </Text>
-            <TonConnectButton className='ton-connect-page__button'/>
-          </>
-        }
-      />
-    );
-  }
+  const [isOpen, setIsOpen] = useState(false)
 
-  const {
-    account: { chain, publicKey, address },
-    device: {
-      appName,
-      appVersion,
-      maxProtocolVersion,
-      platform,
-      features,
-    },
-  } = wallet;
+  const  mb =  useMainButton()
+  mb.show().setText("pay now").enable()
+
+  mb.on(("click"), () =>  {
+    setIsOpen(!isOpen)
+  } )
+
+
+
+ 
 
   return (
-    <List>
-      {'imageUrl' in wallet && (
-        <>
-          <Section>
-            <Cell
-              before={
-                <Avatar src={wallet.imageUrl} alt='Provider logo' width={60} height={60}/>
-              }
-              after={<Navigation>About wallet</Navigation>}
-              subtitle={wallet.appName}
-              onClick={(e) => {
-                e.preventDefault();
-                utils.openLink(wallet.aboutUrl);
-              }}
-            >
-              <Title level='3'>{wallet.name}</Title>
-            </Cell>
-          </Section>
-          <TonConnectButton className='ton-connect-page__button-connected'/>
-        </>
-      )}
-      <DisplayData
-        header='Account'
-        rows={[
-          { title: 'Address', value: address },
-          { title: 'Chain', value: chain },
-          { title: 'Public Key', value: publicKey },
-        ]}
-      />
-      <DisplayData
-        header='Device'
-        rows={[
-          { title: 'App Name', value: appName },
-          { title: 'App Version', value: appVersion },
-          { title: 'Max Protocol Version', value: maxProtocolVersion },
-          { title: 'Platform', value: platform },
-          {
-            title: 'Features',
-            value: features
-              .map(f => typeof f === 'object' ? f.name : undefined)
-              .filter(v => v)
-              .join(', '),
-          },
-        ]}
-      />
+    <List className=''>
+     <h2>hello  world</h2>
+    {/*} <Drawer.Root shouldScaleBackground>
+      <Drawer.Trigger>
+      <Button className=' w-[90vw] absolute bottom-0 left-4 right-4 ' >I love  this </Button>
+      </Drawer.Trigger>
+      <Drawer.Portal  >
+        <Drawer.Content className='bg-red-600 h-full'>
+       <div className='h-full bg-green-500'>hello</div>
+        </Drawer.Content>
+        <Drawer.Overlay className=' h-full bg-yellow-500' />
+      </Drawer.Portal>
+    </Drawer.Root>*/}
+    
+    <MyDrawer isOpen={isOpen} />
+  
     </List>
   );
 };
